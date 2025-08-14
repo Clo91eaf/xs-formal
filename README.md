@@ -1,11 +1,11 @@
-# Providing formal flow for Xiangshan LoadQueueRAR module
+# Xiangshan Formal Verification Flow
 
 nix flow build from [chisel-nix](https://github.com/chipsalliance/chisel-nix)
 
 ## environment
 
 ```shell
-export CDS_LIC_FILE=xxx@license
+export CDS_LIC_FILE=xxx@hostname
 export JASPER_HOME=/path/to/cadence/JASPER2103/
 ```
 ## flow
@@ -51,7 +51,7 @@ nix build .#jg-fpv --impure
 
 report is under ./result
 
-# Result
+## Result
 
 | id   | Name                               |    Result    |  Engine  |  Bound  |  Time    |
 |--|--|--|--|--|--
