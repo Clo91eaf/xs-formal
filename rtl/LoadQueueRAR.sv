@@ -2535,110 +2535,6 @@ module LoadQueueRAR(
     else
       hasBeenResetReg = 1'bx;
   end // initial
-  always @(posedge reset)
-    hasBeenResetReg <= 1'h1;
-  wire            hasBeenReset = hasBeenResetReg === 1'h1 & reset === 1'h0;
-  LoadQueueRAR_control_data_flag_and_release_should_be_valid_when_redirect_happens:
-    assume property (@(posedge clock) disable iff (~hasBeenReset)
-                     ~io_redirect_valid & io_ldWbPtr_value == 7'h0 & ~io_ldWbPtr_flag
-                     and (|io_query_0_req_bits_uop_lqIdx_value)
-                         & (|io_query_1_req_bits_uop_lqIdx_value)
-                         & (|io_query_2_req_bits_uop_lqIdx_value)
-                     and ~io_query_0_req_bits_uop_lqIdx_flag
-                         & ~io_query_1_req_bits_uop_lqIdx_flag
-                         & ~io_query_2_req_bits_uop_lqIdx_flag
-                     and io_release_bits_paddr[47:4] == 44'h0
-                         & io_query_0_req_bits_paddr[47:4] == 44'h0);
-  wire            _GEN_654 = io_query_0_resp_valid_REG & io_query_0_req_ready_0;
-  LoadQueueRAR_query_should_not_be_revoked_after_load_query_resp:
-    assert property (@(posedge clock) disable iff (~hasBeenReset) _GEN_654 |-> ##1
-                     ~io_query_0_revoke);
-  LoadQueueRAR_release_should_happen_after_load_query_resp:
-    assert property (@(posedge clock) disable iff (~hasBeenReset) _GEN_654 |=> ##[2:$]
-                     (io_release_valid
-                      and io_release_bits_paddr[3:0] == io_query_0_req_bits_paddr[3:0]));
-  LoadQueueRAR_load_query_should_be_valid_and_ready_after_load_query_resp:
-    assert property (@(posedge clock) disable iff (~hasBeenReset) _GEN_654 |=> ##[3:$]
-                     (io_query_0_req_valid and io_query_0_req_ready_0 and 1'h1));
-  LoadQueueRAR_not_keep_same_flag_after_load_query_resp:
-    assert property (@(posedge clock) disable iff (~hasBeenReset)
-                     (_GEN_654
-                      |=> (io_query_0_req_bits_uop_robIdx_flag and not ##[3:$]
-                           io_query_0_req_bits_uop_robIdx_flag or not
-                           io_query_0_req_bits_uop_robIdx_flag and ##[3:$]
-                           io_query_0_req_bits_uop_robIdx_flag) and not
-                      (io_query_0_req_bits_uop_robIdx_value[0] and not ##[3:$]
-                       io_query_0_req_bits_uop_robIdx_value[0] or not
-                       io_query_0_req_bits_uop_robIdx_value[0] and ##[3:$]
-                       io_query_0_req_bits_uop_robIdx_value[0]
-                       or io_query_0_req_bits_uop_robIdx_value[1] and not ##[3:$]
-                       io_query_0_req_bits_uop_robIdx_value[1] or not
-                       io_query_0_req_bits_uop_robIdx_value[1] and ##[3:$]
-                       io_query_0_req_bits_uop_robIdx_value[1]
-                       or io_query_0_req_bits_uop_robIdx_value[2] and not ##[3:$]
-                       io_query_0_req_bits_uop_robIdx_value[2] or not
-                       io_query_0_req_bits_uop_robIdx_value[2] and ##[3:$]
-                       io_query_0_req_bits_uop_robIdx_value[2]
-                       or io_query_0_req_bits_uop_robIdx_value[3] and not ##[3:$]
-                       io_query_0_req_bits_uop_robIdx_value[3] or not
-                       io_query_0_req_bits_uop_robIdx_value[3] and ##[3:$]
-                       io_query_0_req_bits_uop_robIdx_value[3]
-                       or io_query_0_req_bits_uop_robIdx_value[4] and not ##[3:$]
-                       io_query_0_req_bits_uop_robIdx_value[4] or not
-                       io_query_0_req_bits_uop_robIdx_value[4] and ##[3:$]
-                       io_query_0_req_bits_uop_robIdx_value[4]
-                       or io_query_0_req_bits_uop_robIdx_value[5] and not ##[3:$]
-                       io_query_0_req_bits_uop_robIdx_value[5] or not
-                       io_query_0_req_bits_uop_robIdx_value[5] and ##[3:$]
-                       io_query_0_req_bits_uop_robIdx_value[5]
-                       or io_query_0_req_bits_uop_robIdx_value[6] and not ##[3:$]
-                       io_query_0_req_bits_uop_robIdx_value[6] or not
-                       io_query_0_req_bits_uop_robIdx_value[6] and ##[3:$]
-                       io_query_0_req_bits_uop_robIdx_value[6]
-                       or io_query_0_req_bits_uop_robIdx_value[7] and not ##[3:$]
-                       io_query_0_req_bits_uop_robIdx_value[7] or not
-                       io_query_0_req_bits_uop_robIdx_value[7] and ##[3:$]
-                       io_query_0_req_bits_uop_robIdx_value[7])) or not
-                     (io_query_0_req_bits_uop_robIdx_flag and not ##[3:$]
-                      io_query_0_req_bits_uop_robIdx_flag or not
-                      io_query_0_req_bits_uop_robIdx_flag and ##[3:$]
-                      io_query_0_req_bits_uop_robIdx_flag)
-                     and (io_query_0_req_bits_uop_robIdx_value[0] and not ##[3:$]
-                          io_query_0_req_bits_uop_robIdx_value[0] or not
-                          io_query_0_req_bits_uop_robIdx_value[0] and ##[3:$]
-                          io_query_0_req_bits_uop_robIdx_value[0]
-                          or io_query_0_req_bits_uop_robIdx_value[1] and not ##[3:$]
-                          io_query_0_req_bits_uop_robIdx_value[1] or not
-                          io_query_0_req_bits_uop_robIdx_value[1] and ##[3:$]
-                          io_query_0_req_bits_uop_robIdx_value[1]
-                          or io_query_0_req_bits_uop_robIdx_value[2] and not ##[3:$]
-                          io_query_0_req_bits_uop_robIdx_value[2] or not
-                          io_query_0_req_bits_uop_robIdx_value[2] and ##[3:$]
-                          io_query_0_req_bits_uop_robIdx_value[2]
-                          or io_query_0_req_bits_uop_robIdx_value[3] and not ##[3:$]
-                          io_query_0_req_bits_uop_robIdx_value[3] or not
-                          io_query_0_req_bits_uop_robIdx_value[3] and ##[3:$]
-                          io_query_0_req_bits_uop_robIdx_value[3]
-                          or io_query_0_req_bits_uop_robIdx_value[4] and not ##[3:$]
-                          io_query_0_req_bits_uop_robIdx_value[4] or not
-                          io_query_0_req_bits_uop_robIdx_value[4] and ##[3:$]
-                          io_query_0_req_bits_uop_robIdx_value[4]
-                          or io_query_0_req_bits_uop_robIdx_value[5] and not ##[3:$]
-                          io_query_0_req_bits_uop_robIdx_value[5] or not
-                          io_query_0_req_bits_uop_robIdx_value[5] and ##[3:$]
-                          io_query_0_req_bits_uop_robIdx_value[5]
-                          or io_query_0_req_bits_uop_robIdx_value[6] and not ##[3:$]
-                          io_query_0_req_bits_uop_robIdx_value[6] or not
-                          io_query_0_req_bits_uop_robIdx_value[6] and ##[3:$]
-                          io_query_0_req_bits_uop_robIdx_value[6]
-                          or io_query_0_req_bits_uop_robIdx_value[7] and not ##[3:$]
-                          io_query_0_req_bits_uop_robIdx_value[7] or not
-                          io_query_0_req_bits_uop_robIdx_value[7] and ##[3:$]
-                          io_query_0_req_bits_uop_robIdx_value[7]));
-  LoadQueueRAR_load_query_resp_should_be_valid_and_rep_frm_fetch_after_load_query_resp:
-    assert property (@(posedge clock) disable iff (~hasBeenReset) _GEN_654 |=> ##2
-                     (io_query_0_resp_valid_REG
-                      and _io_query_0_resp_bits_rep_frm_fetch_T_70));
   reg  [1:0]      io_perf_0_value_REG;
   reg  [1:0]      io_perf_0_value_REG_1;
   reg  [1:0]      io_perf_1_value_REG;
@@ -8661,5 +8557,42 @@ module LoadQueueRAR(
   assign io_query_2_resp_bits_rep_frm_fetch = _io_query_2_resp_bits_rep_frm_fetch_T_70;
   assign io_perf_0_value = {4'h0, io_perf_0_value_REG_1};
   assign io_perf_1_value = {4'h0, io_perf_1_value_REG_1};
+
+  // formal
+  asm0: assume property (@(posedge clock) disable iff(reset)
+    (~io_redirect_valid && 
+      io_ldWbPtr_value == 0 && 
+      io_ldWbPtr_flag == 0 && 
+      io_query_0_req_bits_uop_lqIdx_value > 0 && 
+      io_query_1_req_bits_uop_lqIdx_value > 0 && 
+      io_query_2_req_bits_uop_lqIdx_value > 0 &&
+      io_query_0_req_bits_uop_lqIdx_flag == 0 && 
+      io_query_1_req_bits_uop_lqIdx_flag == 0 && 
+      io_query_2_req_bits_uop_lqIdx_flag == 0
+    )
+  );
+
+  asm1: assume property (@(posedge clock) disable iff(reset)
+    (io_release_bits_paddr[47:4]==44'b0 && io_query_0_req_bits_paddr[47:4]==44'b0)
+  );
+
+  logic [3:0] temp_paddr; 
+  logic [5:0] temp_value; 
+  logic temp_flag;
+  ast0: assert property (
+    @(posedge clock) disable iff(reset)
+     (io_query_0_req_valid && io_query_0_req_ready, 
+       temp_paddr = io_query_0_req_bits_paddr[3:0], 
+       temp_value = io_query_0_req_bits_uop_robIdx_value, 
+       temp_flag = io_query_0_req_bits_uop_robIdx_flag)
+      |-> ##1     (~io_query_0_revoke)
+      |-> ##1     (io_query_0_resp_valid & io_query_0_resp_bits_rep_frm_fetch)
+      |-> ##[1:$] (io_release_valid && (io_release_bits_paddr[3:0] == temp_paddr))
+      |-> ##[2:$] (io_query_0_req_valid && 
+                   io_query_0_req_ready && 
+                   (temp_flag ^ io_query_0_req_bits_uop_robIdx_flag ^ (temp_value > io_query_0_req_bits_uop_robIdx_value)) && 
+                   (io_query_0_req_bits_paddr[3:0] == temp_paddr))
+    );
+
 endmodule
 
