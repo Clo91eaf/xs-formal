@@ -49,19 +49,14 @@ run the batch in ./nix/scripts/FPV.tcl and get report directly.
 nix build .#jg-fpv --impure
 ```
 
+report is under ./result
+
 # Result
 
-==============================================================
-RESULTS
-==============================================================
-
---------------------------------------------------------------------------------------------
-       Name                                |    Result    |  Engine  |  Bound  |  Time    
---------------------------------------------------------------------------------------------
-
----[ <embedded> ]---------------------------------------------------------------------------
-[1]   LoadQueueRAR.asm0                         temporary       ?                  0.000 s      
-[2]   LoadQueueRAR.asm1                         temporary       ?                  0.000 s      
-[3]   LoadQueueRAR.ast0                         proven          PRE    Infinite    0.000 s      
-[4]   LoadQueueRAR.ast0:precondition1           covered         N             1    0.019 s      
+| id   | Name                               |    Result    |  Engine  |  Bound  |  Time    |
+|--|--|--|--|--|--
+| [1]  | LoadQueueRAR.asm0                  |       temporary  |     ?    |            |  0.000 s      |
+| [2]  | LoadQueueRAR.asm1                  |       temporary  |     ?    |            |  0.000 s      |
+| [3]  | LoadQueueRAR.ast0                  |       proven     |     PRE  |  Infinite  |  0.000 s      |
+| [4]  | LoadQueueRAR.ast0:precondition1    |       covered    |     N    |         1  |  0.019 s      |
 
