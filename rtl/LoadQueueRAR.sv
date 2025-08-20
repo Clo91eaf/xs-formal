@@ -8576,23 +8576,23 @@ module LoadQueueRAR(
     (io_release_bits_paddr[47:4]==44'b0 && io_query_0_req_bits_paddr[47:4]==44'b0)
   );
 
-  logic [3:0] temp_paddr; 
-  logic [5:0] temp_value; 
-  logic temp_flag;
   ast0: assert property (
+    logic [3:0] temp_paddr;
+    logic [5:0] temp_value;
+    logic temp_flag;
     @(posedge clock) disable iff(reset)
-     (io_query_0_req_valid && io_query_0_req_ready, 
-       temp_paddr = io_query_0_req_bits_paddr[3:0], 
-       temp_value = io_query_0_req_bits_uop_robIdx_value, 
-       temp_flag = io_query_0_req_bits_uop_robIdx_flag)
+      (io_query_0_req_valid && io_query_0_req_ready, 
+      temp_paddr = io_query_0_req_bits_paddr[3:0], 
+      temp_value = io_query_0_req_bits_uop_robIdx_value, 
+      temp_flag = io_query_0_req_bits_uop_robIdx_flag)
       |-> ##1     (~io_query_0_revoke)
       |-> ##[1:$] (io_release_valid && (io_release_bits_paddr[3:0] == temp_paddr))
-      |-> ##[2:$] (io_query_0_req_valid && 
-                   io_query_0_req_ready && 
-                   (temp_flag ^ io_query_0_req_bits_uop_robIdx_flag ^ (temp_value > io_query_0_req_bits_uop_robIdx_value)) && 
+      |-> ##[2:$] (io_query_0_req_valid &&
+                   io_query_0_req_ready &&
+                   (temp_flag ^ io_query_0_req_bits_uop_robIdx_flag ^ (temp_value > io_query_0_req_bits_uop_robIdx_value)) &&
                    (io_query_0_req_bits_paddr[3:0] == temp_paddr))
       |-> ##1     (io_query_0_resp_valid & io_query_0_resp_bits_rep_frm_fetch)
-    );
+  );
 
 endmodule
 
